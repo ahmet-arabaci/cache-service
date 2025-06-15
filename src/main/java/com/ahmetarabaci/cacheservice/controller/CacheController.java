@@ -2,8 +2,8 @@ package com.ahmetarabaci.cacheservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ahmetarabaci.cacheservice.service.CacheInspectService;
 import com.ahmetarabaci.cacheservice.service.CacheService;
@@ -14,40 +14,37 @@ public class CacheController {
 	@Autowired
 	private CacheService service;
 	@Autowired
-	private CacheInspectService cacheInspectService;
+	private CacheInspectService inspectService;
 	
-	@PostMapping("/insertdata/{key}/{val}")
-	public String insertData(@PathVariable("key") String key, @PathVariable("val") String val) {
-		service.insertData(key, val); 
-		return String.format("INSERT QUERY EXECUTED. -> KEY: %s - VAL: %s", key, val);
+	@GetMapping("/getdata")
+	public String getData() {
+		return service.getData();		
 	}
 	
-	@PostMapping("/updatedata/{key}/{val}")
-	public String updateData(@PathVariable("key") String key, @PathVariable("val") String val) {
-		service.updateData(key, val);
-		return String.format("UPDATE QUERY EXECUTED. -> KEY: %s - VAL: %s", key, val);
+	@GetMapping("/getcache")
+	public String getCache() {
+		return service.getCache();
 	}
 	
-	@PostMapping("/deletedata/{key}")
-	public String deleteData(@PathVariable("key") String key) {
-		service.deleteData(key);
-		return String.format("DELETE QUERY EXECUTED. -> KEY: %s", key);
+	@PostMapping("/updatedata")
+	public String updateData(@RequestBody String data) {
+		service.updateData(data);
+		return String.format("Only VAR has been updated with: '%s'", data);
 	}
 	
-	@GetMapping("/selectdata/{key}")
-	public String selectData(@PathVariable("key") String key) {
-		String val = service.selectData(key);
-		return String.format("SELECT QUERY EXECUTED. -> KEY: %s - VAL: %s", key, val);
+	@PostMapping("/updatecache")
+	public String updateCache(@RequestBody String data) {
+		service.updateCache(data);
+		return String.format("VAR and cache has been updated with: '%s'", data);
 	}
 	
 	@GetMapping("/clearcache")
 	public String clearCache() {
-		service.clearCache();
-		return "CACHE HAS BEEN CLEARED.";
+		return service.clearCache();
 	}
 	
-	@GetMapping("/getcacheinfo")
-	public String getCacheInfo() {
-		return cacheInspectService.printCacheContents("rediscache");
+	@GetMapping("/getcachecontents")
+	public String getCacheContents() {
+		return inspectService.getCacheContents("rediscache");
 	}
 }

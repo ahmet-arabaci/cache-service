@@ -11,10 +11,10 @@ public class CacheInspectService {
 	@Autowired
 	private CacheManager cacheManager;
 	
-	public String printCacheContents(String cacheName) {
+	public String getCacheContents(String cacheName) {
 		Cache cache = cacheManager.getCache(cacheName);
-		if (cache != null) {
-			return String.format("Cache info: %s", cache.getNativeCache().toString());
+		if (cache != null) {			
+			return String.format("Cache info: %s | Content: '%s'", cache.getNativeCache().toString(), cache.get("customkey").toString());
 		} else { 
 			return String.format("'%s' cache couldn't found!", cacheName);
 		}		

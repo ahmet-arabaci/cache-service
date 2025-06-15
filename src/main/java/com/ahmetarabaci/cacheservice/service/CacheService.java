@@ -1,44 +1,38 @@
 package com.ahmetarabaci.cacheservice.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import com.ahmetarabaci.cacheservice.repository.OracleRepository;
 
 @Service
 public class CacheService {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CacheService.class);
-	
-	@Autowired
-	private OracleRepository repo;	
 		
-	public int insertData(String key, String val) {
-		return repo.insertData(key, val);		
-	}
-
-	public void deleteData(String key) {		
-		repo.deleteData(key);
+	private String data = "DATA";
+		
+	public String getData() {	
+		return data;
 	}
 	
-	@CachePut(value = "rediscache", key = "'customkey'")
-	public String updateData(String key, String val) {
-		repo.updateData(key, val);
-		return val;
+	public String updateData(String data) {
+		this.data = data;
+		return this.data;
 	}
 	
 	@Cacheable(value = "rediscache", key = "'customkey'")
-	public String selectData(String key) {	
-		return repo.selectData(key);
+	public String getCache() {	
+		return this.data;
 	}
 	
+	@CachePut(value = "rediscache", key = "'customkey'")
+	public String updateCache(String data) {
+		this.data = data;
+		return data;
+	}
+		
 	@CacheEvict(value = "rediscache", key = "'customkey'")
-	public void clearCache() {
-		LOGGER.info("Cache cleared.");
+	public String clearCache() {
+		return "Cache has been cleared.";
 	}
 					
 }
